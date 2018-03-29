@@ -512,7 +512,7 @@ def run_main(flags, default_hparams, train_fn, inference_fn, target_session=""):
       (hparams.inference_indices) = (
           [int(token)  for token in flags.inference_list.split(",")])
 
-    # Inference
+    # Run the inference function
     trans_file = flags.inference_output_file
     ckpt = flags.ckpt
     if not ckpt:
@@ -531,19 +531,19 @@ def run_main(flags, default_hparams, train_fn, inference_fn, target_session=""):
             hparams.subword_option)
         utils.print_out("  %s: %.1f" % (metric, score))
   else:
-    # Train
+    # Run the training function
     train_fn(hparams, target_session=target_session)
 
 
 def main(unused_argv):
-  default_hparams = create_hparams(FLAGS)
+  default_hparams = create_hparams(FLAGS) # create hyper-params from flags/arguments passed in from command line
   train_fn = train.train
   inference_fn = inference.inference
   run_main(FLAGS, default_hparams, train_fn, inference_fn)
 
-
+# Take in arguments if run from command line
 if __name__ == "__main__":
   nmt_parser = argparse.ArgumentParser()
   add_arguments(nmt_parser)
   FLAGS, unparsed = nmt_parser.parse_known_args()
-  tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+  tf.app.run(main=main, argv=[sys.argv[0]] + unparsed) # run def main

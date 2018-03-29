@@ -97,6 +97,9 @@ def create_train_model(
     # `tf.train.replica_device_setter(ps_tasks)` for distributed training.
     model_device_fn = None
     if extra_args: model_device_fn = extra_args.model_device_fn
+
+    # model_creator is the instance of the model that was chosen (eg. nmt_model.model from model.py)
+    # Look at model.py -> BaseModel and Model constructors
     with tf.device(model_device_fn):
       model = model_creator(
           hparams,
@@ -105,13 +108,13 @@ def create_train_model(
           source_vocab_table=src_vocab_table,
           target_vocab_table=tgt_vocab_table,
           scope=scope,
-          extra_args=extra_args)
+          extra_args=extra_args) # this line actually builds the model/graph
 
   return TrainModel(
       graph=graph,
       model=model,
       iterator=iterator,
-      skip_count_placeholder=skip_count_placeholder)
+      skip_count_placeholder=skip_count_placeholder) # this model and params are returned to outer fn for execution
 
 
 class EvalModel(
